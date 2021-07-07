@@ -1,0 +1,169 @@
+selector
+
+$("")  //這是一種selectors
+$("p") //選擇所有p元素
+$("#test")  //選擇id為test的元素 id前加#
+$(".test")  //選擇class為test的元素 class前加.
+$("*")  //選擇全部的元素
+$("[href]")   //選擇全部有屬性的元素
+$("tr:even")  //選擇表格中的奇數row odd為偶數row
+
+
+//------------------------------------------------------------------------------------------
+
+
+event
+
+$("#test").click()  //為id為test的元素加入click的事件
+$("#test").dblclick()  //雙擊事件
+$("#test").mouseenter()  //當滑鼠移入
+$("#test").keypress()    //當在input中按下鍵盤
+$("#test").on({          //on可加入多個事件
+	mouseenter: function(){
+		$(this).css("background-color", "lightgray");
+	},
+	mouseleave: function(){
+		$(this).css("background-color", "lightblue");
+	},
+	click: function(){
+		$(this).css("background-color", "yellow");
+	}
+});
+
+
+//--------------------------------------------------------------------------------------------
+
+
+Effects
+
+$("p").click(function(){
+  $(this).hide("slow");      //當p被click,則慢慢地隱藏起來
+});
+
+$("p").click(function(){
+  $(this).show("slow");      //當p被click,才慢慢地顯示
+});
+
+$("p").click(function(){
+  $(this).toggle();          //類似hide與show的合體
+});
+
+$("#div1").fadeOut(3000);      //將div1淡出,3秒後
+
+$("#div1").fadeToggle();       //fadeIn跟fadeOut的合體
+
+$("#div1").fadeTo("slow",0.2)   //將div1慢慢淡至0.2透明度
+
+$("#div1").slideToggle("slow")  //將div1附上滑動夾效果
+
+$("#div1").animate({left: '250px'})  //向右移動250px
+
+$("#div1").animate({       //操作多屬性的animate
+	left: '250px',
+	opacity: '0.5',
+	height: '150px',
+	width: '150px'
+})
+
+$("#div1").animate({height: 'toggle'})  //使用預設值
+
+$("#div1").stop()   //停止
+
+$("#div1").hide("slow",function(){      //在效果結束後立即執行函數
+	alert("this is callback");          
+})
+
+
+//------------------------------------------------------------------------------------
+
+
+GET & SET
+
+$("#div1").text()         //設置或獲取元素的文本
+$("#div1").html()         //設置或獲取元素本身(包括HTML標記)
+$("#div1").val            //設置或獲取表單域的值
+
+$("#div1").attr("href")   //獲取元素中href的值
+$("#div1").attr("href" ,"https://www.w3schools.com/jquery/")  //設置元素中href為第2格
+$("#div1").attr({                                             //同時設置多個attr
+	"href" : "https://www.w3schools.com/jquery/"
+	"title" : "W3Schools jQuery Tutorial"
+})
+
+
+//--------------------------------------------------------------------------------------
+
+
+ADD & REMOVE
+
+$("#div1").append()        //在所選元素的末尾插入內容
+$("#div1").prepend()       //在所選元素的開頭插入內容
+
+$("#div1").after()         //在所選元素的之後插入內容
+$("#div1").before()        //在所選元素的之前插入內容
+
+$("#div1").remove()        //刪除所選元素及其子元素
+$("#div1").empty()         //刪除所選元素中的子元素 
+
+$("div").remove(".div1, .div2")  //參數可是類別等...,幫助篩選刪除的元素
+
+
+//--------------------------------------------------------------------------------------
+
+
+CSS Classes
+
+$("#div1").addClass("class1 class2")       //為元素加入class(可同時添加多個)
+$("#div1").removeClass()    //為元素刪除class
+$("#div1").toggleClass()    //為元素添加一個可開關的class
+
+$("#div1").css("background-color","pink")  //為元素添加一個css屬性
+$("#div1").css({                           //可一次添加多個css屬性
+	"propertyname":"value", 
+	"propertyname":"value", 
+	"propertyname":"value"
+})
+
+
+//--------------------------------------------------------------------------------------
+
+
+Dimensions
+
+https://imgur.com/gallery/l2GdJ3X  //這是一個元素的容器說明
+
+
+$("#div1").width(500)  //將element的寬度調至500
+          .innerwidth(500)  //將padding層調至500
+		  .outerwidth(500)  //將border層調至500
+		  .outerwidth(true) //回傳整個元素的寬度
+
+//---------------------------------------------------------------------------------------
+
+
+Traversing
+
+$("#span1").parent()        //回傳元素的上一個父元素		  
+$("#span1").parents()       //回傳元素的所有父元素
+$("#span1").parents("ul")   //回傳父元素中的<ul>元素
+$("#span1").parentsUntil("div")  //回傳所有父元素直到<div>(不包括div)
+
+$("#div1").children()       //回傳元素的下一層的所有子元素
+$("#div1").children("p.first")     //回傳元素下一層的第一個p元素
+$("#div1").find("span")     //回傳子元素中所有的span元素
+$("#div1").find("*")        //回傳所有子元素
+
+$("#div1").siblings()       //回傳所有平輩的元素
+$("#div1").next()           //回傳下一個平輩元素
+$("#div1").nextAll()        //回傳接下來所有平輩元素
+$("#div1").nextUntil("#div6")    //回傳接下來所有平輩元素直到<div id="div6">
+$("#div1").prev()           //回傳上一個平輩元素
+
+$("div").first()            //回傳第一個div
+$("div").last()             //回傳最後一個div
+$("div").eq(1)              //回傳第2個div
+$("div").filter(".red")  //回傳class為red的元素
+$("div").not(".red")     //回傳class不為red的元素
+
+
+

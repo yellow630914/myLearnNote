@@ -174,8 +174,10 @@ const app = Vue.createApp(listApp).mount('#app');
 ![img](https://i.imgur.com/2meYFZy_d.webp?maxwidth=1520&fidelity=grand)
 
 1. View : 視圖層,主要為用戶提供各種頁面訊息,在前端中指DOM
-2. Model : 資料層,提供各種資料的調用與更改
+2. Model : 資料層,提供各種資料
 3. ViewModel : 視圖模型層,view之間model的溝通橋樑,主要實現資料綁定(Data Binding)與DOM監聽(DOM Listeners)
 
+![img](https://i.imgur.com/RrqvW3h_d.webp?maxwidth=760&fidelity=grand)
 
+上圖為MVVM的一個實例,view負責呈現,viewmodel負責寫入動作,model負責裝載資料
 

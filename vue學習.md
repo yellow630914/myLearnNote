@@ -181,3 +181,144 @@ const app = Vue.createApp(listApp).mount('#app');
 
 上圖為MVVM的一個實例,view負責呈現,viewmodel負責寫入動作,model負責裝載資料
 
+---
+
+## 安裝Vue.js Devtools
+
+Vue.js Devtools是在瀏覽器上的開發工具,能夠幫助開發者在瀏覽器上調整vue代碼,此工具可以直接在chrome與firefox插件商店找到
+
+- [google chrome](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd?hl=zh-TW)
+
+---
+
+## Mustache語法
+
+example : `{{ msg }}`就是vue中的Mustache語法,主要放置一些變數或簡單的表達式,以下示範4個例子:
+
+```html
+<body>
+	<div id='app'>
+		<!--在{{ msg }}後也可增加一段text-->
+		<h2>{{ msg }}  https://v3.cn.vuejs.org/</h2>
+		<!--{{}}中可以有簡單的表達式,如下-->
+		<h2>{{ msg + '  ' + site }}</h2>
+		<!--在通一個元素裡可同時存在兩個{{}}-->
+		<h2>{{ msg }}  {{ site }}</h2>
+		<!--在{{}}中也可進行簡單的計算-->
+		<h2>計算: {{ count * 10 }}</h2>
+	</div>
+	<script src='js/vue.global.js'></script>
+	<script>
+		const app = Vue.createApp({
+			data() {
+				return {
+					msg: 'Hello Vue!',
+					site: 'https://v3.cn.vuejs.org/',
+					count: '2'
+				}
+			}
+		}).mount('#app');
+	</script>
+</body>
+```
+
+值得注意的是`{{}}`只能適用於元素之內,無法在元素的屬性欄位使用
+
+---
+
+## Vue的插值語法
+
+vue的插值語法主要負責填入mustache中的相關變數,常用的有`v-text,v-html,v-pre,v-once,v-cloak`接著依序看這5個語法的實例與用途
+
+### v-once的用途與實例
+
+```html
+<div id='app'>
+  <!--這個msg會隨著model中的msg改變-->
+  <h2>會變的: {{ msg }}</h2>
+  <!--這個msg會保持原樣,之後即使model中的msg改變也不會隨著改變-->
+  <h2 v-once>不變的: {{ msg }}</h2>
+</div>
+
+```
+
+被`v-once`語法標記的元素中,所有`{{}}`中的變數只能保持原樣,不會跟著model的資料而改變
+
+### v-text的用途與實例
+
+```html
+<div id='app'>
+  <!--這個msg與下面的是一樣的-->
+  <h2>{{ msg }}</h2>
+  <!--這個元素中的text是由vue的語法填充,若是其中已經有其他內他會覆蓋之-->
+  <h2 v-text="msg">Vue is bad</h2>
+</div>
+```
+
+`v-text="msg"`的功能與`{{ msg }}`相差無幾,但是`{{ msg }}`能夠更有彈性,例如:`<h2>{{ msg }}!!!!<h2>`等等,`v-text`還有一個特點,就是它會覆蓋原本的text,如上面的例子中`Vue is bad`就不會被顯示
+
+### v-html的用途與實例
+
+```html
+<div id='app'>
+  <!--直接將site放入會當作文本呈現-->
+  {{site}}
+  <!--使用了v-html之後,就能夠正常顯示連結了-->
+  <div v-html="site"></div>
+</div>
+```
+
+`v-html`可以插入html的標籤語法,如果直接將html語法放入`{{}}`中的話,他們會被當成文本處裡,使用了v-html後就能正常呈現了
+
+### v-pre的用途與實例
+
+```html
+<div id='app'>
+  <!--這個msg會正常顯示-->
+  <h2>編譯: {{ msg }}</h2>
+  <!--這個msg因為v-pre而不去編譯,所以顯示{{ msg }}-->
+  <h2 v-pre>不編譯: {{ msg }}</h2>
+</div>
+```
+
+v-pre會讓元素內的{{}}不被vue編譯
+
+### v-cloak的用途與實例
+
+v-cloak是一個在編譯完成後會被消除的語法,而它的使用情況通常都在防止編譯前,網站把原碼呈現到用戶頁面上,因此我們的以下例子先以`setTimeout()`延遲了編譯完成的時間,去模擬網路不順的情況,然後我們賦予`v-cloak`一個樣式,讓元素在有`v-cloak`時被隱藏,例如:
+
+```html
+<style>
+  /*指定v-cloak的樣式*/
+  [v-cloak]{
+    display:none;
+  }
+</style>
+```
+以下有兩個`{{ msg }}`沒有`v-cloak`的會在延遲的五秒內保持{{ msg }},而有`v-claok`則是會被隱藏
+
+```html
+<body>
+  <div id='app'>
+    <!--普通的{{ msg }}-->
+    <h2>沒有v-cloak: {{ msg }}</h2>
+    <!--v-claok會在Vue編譯完成之後消失-->
+    <h2 v-cloak>有v-claok: {{ msg }}</h2>
+  </div>
+  <script src='js/vue.global.js'></script>
+  <script>
+    //這裡用setTimeout延遲5秒,模擬網路不順的情況
+    setTimeout(()=>{
+      const app = Vue.createApp({
+      data() {
+        return {
+          msg: 'Hello Vue!'
+        }
+      }
+    }).mount('#app');
+    }
+    ,5000)
+  </script>
+</body>
+```
+

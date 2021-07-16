@@ -469,3 +469,95 @@ v-bind主要負責綁定元素的屬性,將元素中屬性與model綁定,讓他�
 
 ---
 
+## v-on
+
+### v-on的基礎
+
+v-on是在元素上附加事件的vue語法,他可以將view的元素與viewmodel端的函式相綁定,以達到當觸發事件時,執行methods中的函式,以下示範click事件:
+
+```html
+<body>
+  <div id='app'>
+    <h2>{{ count }}</h2>
+    <!--當按下按鈕時觸發add事件-->
+    <button v-on:click="add">+</button>
+    <!--當按下按鈕時觸發sub事件-->
+    <button @click="sub">-</button>
+  </div>
+  <script src='js/vue.global.js'></script>
+  <script>
+    const app = Vue.createApp({
+      data() {
+        return {
+          //count是一個數值物件
+          count: 0
+        }
+      },
+      methods: {
+        add(){
+          //當add被執行時count+1
+          this.count++;
+        },
+        sub(){
+          //當sub被執行時count-1
+          this.count--;
+        }
+      },
+    }).mount('#app');
+  </script>
+</body>
+```
+
+### v-on參數傳遞
+
+v-on中,當函數有參數需要輸入時,會有各種情況,以下列出4種情況:
+
+```html
+<body>
+  <div id='app'>
+    <!--指定函式帶有(),代表輸入空值-->
+    <button @click="btn1()">btn1</button>
+    <!--指定函式時沒有(),則選擇自動填入事件本身-->
+    <button @click="btn2">btn2</button>
+    <!--填入的參數可以是數字,字串,布林值,同時也可以是data內的物件,他會去vue中找msg-->
+    <button @click="btn3(123, 'fff', true ,msg)">btn3</button>
+    <!--當你需要填入參數與事件本身時可以使用$,通常需要填入事件時會放在最後-->
+    <button @click="btn4(123, 'fff', true ,msg ,$event)">btn4</button>
+  </div>
+  <script src='js/vue.global.js'></script>
+  <script>
+    const app = Vue.createApp({
+      data() {
+        return {
+          msg: "哭阿"
+        }
+      },
+      methods: {
+        btn1(logText){
+          //有(),而沒有填入參數時會log undefined
+          console.log(logText);
+        },
+        btn2(logText){
+          //沒有()時直接log事件本身
+          console.log(logText);
+        },
+        btn3(log1,log2,log3,log4){
+          //一一顯示個參數
+          console.log(log1,log2,log3,log4);
+          //直接抓取參數array
+          console.log(arguments);
+        },
+        btn4(log1,log2,log3,log4,event){
+          //顯示事件本身
+          console.log(log1,log2,log3,log4,event);
+        }
+      },
+    }).mount('#app');
+  </script>
+</body>
+```
+
+### v-on常用修飾符
+
+
+

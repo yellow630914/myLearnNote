@@ -322,3 +322,150 @@ v-cloak是一個在編譯完成後會被消除的語法,而它的使用情況通
 </body>
 ```
 
+---
+
+## v-bind
+
+### v-bind的基礎
+
+v-bind主要負責綁定元素的屬性,將元素中屬性與model綁定,讓他們可以隨著動態改變,簡單的範例如下:
+
+```html
+<body>
+  <div id='app'>
+    <h2>{{ msg }}</h2>
+    <!--沒有加入v-bind的元素,其在屬性中的值會直接視為字串-->
+    <img src="imgUrl" alt="">
+    <!--加入v-bind之後就可以調用model裡的值了-->
+    <img v-bind:src="imgUrl" v-bind:alt="alt">
+    <!--v-bind的簡寫使用':'-->
+    <a :href="site">vue</a>
+  </div>
+  <script src='js/vue.global.js'></script>
+  <script>
+    const app = Vue.createApp({
+      data() {
+        return {
+          //model層
+          msg: 'Hello Vue!',
+          imgUrl:'https://i.imgur.com/EpGLUi4.gif',
+          alt:'報社',
+          site:'https://v3.cn.vuejs.org/'
+        }
+      }
+    }).mount('#app');
+  </script>
+</body>
+```
+
+範例中只要更改`model`中的的資料即可實時更改`view`中的圖片,網址等等...
+
+### v-bind綁定class
+
+`v-bind`也可以綁定css中的class,先從style中設定class
+
+```html
+<style>
+  .red{
+    color: red;
+  }
+  .f60{
+    font-size: 60px;
+  }
+</style>
+```
+接著將vue中的data綁定到css中的class,使用了`v-bind`之後,class屬性會依照vue中的data找
+
+```html
+<body>
+  <div id='app'>
+    <!--直接從使用class-->
+    <h2 class='red'>{{ msg }}</h2>
+    <!--當加入:後編譯器會從model去找class-->
+    <h2 :class='red'>{{ msg }}</h2>
+    <!--此h2成功在model找到了class-->
+    <h2 :class='css1'>{{ msg }}</h2>
+    <p>---------------------------------------------------</p>
+    <!--當需要使用到多個class時可以使用以下方法,值得注意的是{}中的class名不會從vue中找,而是從css直接找class,vue只負責處理布林值-->
+    <h2 :class="{ red: isCss1, f60: isCss2 }">{{ msg }}</h2>
+    <!--設置一個按鈕事件change()-->
+    <button @click="change">switch</button>
+    <p>---------------------------------------------------</p>
+    <!--另一個調用多class的方法,無法用布林值控制-->
+    <h2 :class="[css1 ,css2]">{{ msg }}</h2>
+    <!--直接使用封裝好的array-->
+    <h2 :class="mixClass()">{{ msg }}</h2>
+  </div>
+  <script src='js/vue.global.js'></script>
+  <script>
+    const app = Vue.createApp({
+      data() {
+        return {
+          msg: 'Hello Vue!',
+          //這是綁定到css中class的參數
+          css1: 'red',
+          css2: 'f60',
+          //這是用於開關v-bind{}中的布林值
+          isCss1: true,
+          isCss2: true
+        }
+      },
+      methods: {
+        //與按鈕事件相綁定,當按下按鈕時兩布林值逆轉
+        change(){
+          this.isCss1 = !this.isCss1;
+          this.isCss2 = !this.isCss2;
+        },
+        //將兩個class封裝成一個array
+        mixClass(){
+          return [this.css1 ,this.css2];
+        }    
+      }
+    }).mount('#app');
+  </script>
+</body>
+```
+
+若是需要使用多個class,可以用`{}`,`{}`的格式是`{className1: boolean, className2: boolean}`,值得注意的是,`className`指的是css中的class,而不是vue中的data
+
+除了{}之外也可使用[]來實現多個class,[]無法使用布林值控制,當class使用過多,過於冗長時可以直接用methods將之封裝起來,{}也可使用此方法
+
+### v-bind綁定style
+
+`v-bind`可以綁定style屬性,並讓style動態變化,透過vue設定style時需要使用{},{}中的格式是`{界值: '字串'}`,界值因不能有-符號,所以`font-size`必須變為`fontSize`,而60px必須套上' '
+
+```html
+<body>
+  <div id='app'>
+    <!--直接設定style-->
+    <h2 style="font-size: 60px;">{{ msg }}</h2>
+    <!--透過vue設定style-->
+    <h2 :style="{fontSize: '60px'}">{{ msg }}</h2>
+    <!--設定多項style-->
+    <h2 :style="{fontSize: f60, backgroundColor: bColor}">{{ msg }}</h2>
+    <!--直接使用封裝好的style-->
+    <h2 :style="mixStyle()">{{ msg }}</h2>
+  </div>
+  <script src='js/vue.global.js'></script>
+  <script>
+    const app = Vue.createApp({
+      data() {
+        return {
+          msg: 'Hello Vue!',
+          f60: '60px',
+          bColor: 'red'
+        }
+      },
+      methods: {
+        //封裝可讓v-bind使用的style
+        mixStyle(){
+          return {fontSize: this.f60, backgroundColor: this.bColor}
+        }
+      },
+    }).mount('#app');
+  </script>
+</body>
+```
+
+---
+

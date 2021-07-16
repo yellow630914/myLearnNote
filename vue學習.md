@@ -559,5 +559,80 @@ v-on中,當函數有參數需要輸入時,會有各種情況,以下列出4種情
 
 ### v-on常用修飾符
 
+在v-on後面可以加入修飾詞,已在事件上加上一些效果,像是stop可以組止冒泡效果,prevent可以阻止默認事件,once可以讓事件只執行一次,keybored事件也有特別的修飾詞,如enter
+
+```html
+<body>
+  <div id='app'>
+    <!--演示如何用v-on的修飾詞阻止冒泡-->
+    <div class="box" @click="boxClick">
+      <!--在事件後.stop可以修飾成阻止冒泡的效果-->
+      <button @click.stop="btnClick">Click Me!</button>
+    </div>
+
+    <p>--------------------------------------------</p>
+
+    <!--這個form中,按下submit的默認事件是網頁跳轉到的網址,加上prevent就能忽視默認事件,執行doSbmit-->
+    <form action="https://cn.vuejs.org/">
+      <input type="submit" value="提交" @click.prevent="doSbmit">
+    </form>
+    <!--這個a元素也是同一個道理,忽視href,執行aClick-->
+    <a href="https://www.bilibili.com/video/BV1S54y1J7uL" @click.prevent="aClick">歡樂水牛</a>
+
+    <p>--------------------------------------------</p>
+
+    <!--這個button中的事件因為once修飾,所以只能執行一次-->
+    <button @click.once="uClick">Unique button</button>
+
+    <p>--------------------------------------------</p>
+
+    <!--在keybored事件中有特別的修飾詞,如enter,在enter鍵被偵測時才執行事件-->
+    <input type="text" @keydown="getKeybored">
+    <input type="text" @keydown.enter="getKeybored">
+
+  </div>
+  <script src='js/vue.global.js'></script>
+  <script>
+    const app = Vue.createApp({
+      data() {
+        return {
+          msg: 'Hello Vue!'
+        }
+      },
+      methods: {
+        boxClick(){
+          console.log("you click the BOX!!")
+        },
+        btnClick(){
+          //event.stopPropagation();  若是要阻止冒泡也可從事件本身下手
+          console.log("you click the BTN!!")
+        },
+        //---------------------------------------------------
+        doSbmit(){
+          //如果沒有prevent將不會被執行
+          console.log("form submit")
+        },
+        aClick(){
+          //同上
+          console.log("you click the URL!!")
+        },
+        //---------------------------------------------------
+        uClick(){
+          //因為once,所以只會被執行一次
+          console.log("its unique")
+        },
+        //---------------------------------------------------
+        getKeybored(event){
+          //回傳事件的物件
+          console.log(event)
+        }
+      },
+    }).mount('#app');
+  </script>
+</body>
+```
+
+
+
 
 

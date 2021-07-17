@@ -632,7 +632,185 @@ v-on中,當函數有參數需要輸入時,會有各種情況,以下列出4種情
 </body>
 ```
 
+---
 
+## 計算屬性
+
+### 基礎計算屬性
+
+vue中的createApp中有提供一個屬性計算的功能,能夠將屬性在viewmodel端計算後再給view讀取,不需要在view中寫入計算邏輯,以下示範computed:
+
+```html
+<body>
+  <div id='app'>
+      <!--顯示目標-->
+      <p>喬治。馬丁</p>
+      <p>--------------------------------------------</p>
+      <!--在view端計算-->
+      <p>{{ firstName + "。" + lastName }}</p>
+      <p>--------------------------------------------</p>
+      <!--在viewmodel端函式計算-->
+      <p>{{ getFullName() }}</p>
+      <p>--------------------------------------------</p>
+      <!--在viewmodel端用computed計算-->
+      <p>{{ fullName }}</p>
+
+  </div>
+  <script src='js/vue.global.js'></script>
+  <script>
+    const app = Vue.createApp({
+      data() {
+        return {
+          firstName:"喬治",
+          lastName:"馬丁"
+        }
+      },
+      computed:{
+        fullName(){
+            //使用computed計算後的是屬性,並非函式,就像firstName
+            return this.firstName + "。" + this.lastName
+        }
+      },
+      methods: {
+        getFullName(){
+            return this.firstName + "。" + this.lastName   
+        }  
+      },
+    }).mount('#app');
+  </script>
+</body>
+```
+
+當一個頁面的結果需要多個屬性運算後才放入,通常使用computed,被computed之後的屬性,依然是屬性
+
+```html
+<body>
+  <div id='app'>
+    <h2>會員總積分: {{ totalScore }}</h2>
+  </div>
+  <script src='js/vue.global.js'></script>
+  <script>
+    const app = Vue.createApp({
+      data() {
+        return {
+          menbers:[
+            {id:'n001' ,name:'張三' ,score:500},
+            {id:'n002' ,name:'李四' ,score:400},
+            {id:'n003' ,name:'王五' ,score:220},
+            {id:'n004' ,name:'羅翔' ,score:320}
+          ]
+        }
+      },
+      computed:{
+        //加總menbers中的積分
+        totalScore(){
+          let total = 0;
+          this.menbers.forEach( item=>{
+            total += item.score;
+          }
+          );
+          return total;
+        }
+      }
+    }).mount('#app');
+  </script>
+</body>
+```
+
+### 計算屬性的實現方式
+
+計算屬性中的屬性其實是有set與get兩種方法的,在view調用時,計算屬性會默認觸發get方法,以下為實例:
+
+```html
+<body>
+  <div id='app'>
+    <h2>{{ fullName }}</h2>
+  </div>
+  <script src='js/vue.global.js'></script>
+  <script>
+    const app = Vue.createApp({
+      data() {
+        return {
+          firstName:"喬治",
+          lastName:"馬丁"
+        }
+      },
+      computed:{
+        //computed中的屬性其實自帶set與get
+        fullName: {
+          //當外部要設定fullName時,才觸發set
+          set(input){
+            //從console中app.fullName更改時可以觸發
+            console.log("setTrigger",input);
+            let aray = input.split("。");
+            this.firstName = aray[0];
+            this.lastName = aray[1];
+          },
+          //當外部要調用fullName時,因為很少使用set,只要沒有設定到fullName的值,默認觸發get
+          get(){
+            //被view調用時直接觸發
+            console.log("getTrigger");
+            return this.firstName + "。" + this.lastName;
+          }
+        }
+      }
+    }).mount('#app');
+  </script>
+</body>
+```
+
+我們在調用運算屬性時,基本都不會使用到set,通常都是藉由修改data中的屬性來改變計算屬性
+
+### 計算屬性與函式的區別
+
+在`vue.createApp`中methods與computed幾乎可以做到同一件事,而兩者的區別在於computed會緩存計算的結果,methods則是不斷的執行,看以下例子:
+
+```html
+<body>
+  <div id='app'>
+      <!--用computed計算的fullName-->
+      <p>{{ fullName }}</p>
+      <p>{{ fullName }}</p>
+      <p>{{ fullName }}</p>
+      <p>{{ fullName }}</p>
+      <p>{{ fullName }}</p>
+      <!--調用完成後log訊息只有一個,代表計算執行了1次-->
+      <p>--------------------------------------------</p>
+      <!--用methods計算的getFullName-->
+      <p>{{ getFullName() }}</p>
+      <p>{{ getFullName() }}</p>
+      <p>{{ getFullName() }}</p>
+      <p>{{ getFullName() }}</p>
+      <p>{{ getFullName() }}</p>
+      <!--調用完成後log訊息重複了五個,代表計算執行了5次-->
+  </div>
+  <script src='js/vue.global.js'></script>
+  <script>
+    const app = Vue.createApp({
+      data() {
+        return {
+          firstName:"喬治",
+          lastName:"馬丁"
+        }
+      },
+      computed:{
+        fullName(){
+            //當執行時log一段computed訊息
+            console.log("-----this is conputed-----")
+            return this.firstName + "。" + this.lastName
+        }
+      },
+      methods: {
+        getFullName(){
+            //當執行時log一段methods訊息
+            console.log("-----this is methods-----")
+            return this.firstName + "。" + this.lastName   
+        }  
+      },
+    }).mount('#app');
+  </script>
+</body>
+```
 
 
 

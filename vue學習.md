@@ -812,5 +812,130 @@ vue中的createApp中有提供一個屬性計算的功能,能夠將屬性在view
 </body>
 ```
 
+---
+
+## v-if與v-show
+
+`v-if`與`v-show`都是條件渲染,依照某標旗或表達式來決定元素是否出現,show與if不同的是,if是真正的條件渲染當挑漸不足時元素會直接不被渲染,而show則是使用CSS隱藏條件不足的元素,當條件標旗切換頻繁時,建議使用show,兩者的例子如下:
+
+```html
+<body>
+  <div id="app">
+    <!--真正的條件渲染,實現的方式是創建與銷毀-->
+    <p v-if="flag">isRain</p>
+    <p v-else>notRain</p>
+    <p>---------------------------------</p>
+    <!--元素總會被渲染,實現方式是使用CSS-->
+    <p v-show="flag">isPain</p>
+    <p v-show="!flag">notPain</p>
+    <p>---------------------------------</p>
+    <button @click="flag=!flag">switch</button>
+  </div>
+<script src="js/vue.global.js"></script>
+<script>
+  const HelloVue = {
+    data() {
+      return {
+        //用於條件渲染的標旗
+      	flag: true
+      }
+    }
+  }
+  //創建vue的實體導入HelloVue並指向id為app的元素
+  const app = Vue.createApp(HelloVue).mount('#app');
+```
+
+---
+
+## v-for
+
+`v-for`通常用於遍歷array或物件的屬性值,常常使用在`<ul>`等列表中
+
+### v-for陣列
+
+在array中他遍歷所有array中值,如下
+
+```html
+<body>
+  <div id='app'>
+    <!--p作為ary的載體遍歷並生成以ary為準的<li>-->
+    <ul>
+      <li v-for="p in ary">{{p}}</li>
+    </ul>
+    <p>-----------------------------------</p>
+    <!--也可以呼叫內建的ary的index作為呈現的文本-->
+    <ul>
+      <li v-for="(p, index) in ary">{{index + 1}}. {{p}}</li>
+    </ul>
+    <p>-----------------------------------</p>
+    <!--當ary中的值為物件時可以在Mustache中使用物件下的屬性-->
+    <ul>
+      <li v-for="(p, index) in menber">{{index + 1}}. 姓名:{{p.name}}  年齡:{{p.age}} 性別:{{p.sex}}</li>
+    </ul>
+  </div>
+  <script src='js/vue.global.js'></script>
+  <script>
+    const app = Vue.createApp({
+      data() {
+        return {
+          ary:["張三","李四","王五","羅翔"],
+          menber:[
+            {name:'張三', age:35, sex:"male"},
+            {name:'李四', age:25, sex:"male"},
+            {name:'王五', age:39, sex:"female"},
+            {name:'羅翔', age:40, sex:"male"}
+          ] 
+        }
+      }
+    }).mount('#app');
+  </script>
+</body>
+```
+
+### v-for遍歷物件
+
+在物件中他會遍歷物件中`key`所指的值,如下:
+
+```html
+<body>
+  <div id='app'>
+    <!--遍歷物件中的值-->
+    <ul>
+      <li v-for="item in person">{{item}}</li>
+    </ul>
+    <p>-----------------------------------</p>
+    <!--連同key值一起呼叫-->
+    <ul>
+      <li v-for="(item, key) in person">{{key}} : {{item}}</li>
+    </ul>
+    <p>-----------------------------------</p>
+    <!--物件也可呼叫index值-->
+    <ul>
+      <li v-for="(item ,key ,index) in person">{{index+1}}. {{key}} : {{item}}</li>
+    </ul>
+  </div>
+  <script src='js/vue.global.js'></script>
+  <script>
+    const app = Vue.createApp({
+      data() {
+        return {
+          person:{
+            name:"羅翔",
+            age: 18,
+            friends:["張三","李四"]
+          }
+        }
+      }
+    }).mount('#app');
+  </script>
+</body>
+```
+
+### v-if與v-for的衝突
+
+在使用`v-for`與`v-if`時需要特別注意,當在`Vue2.x`版本中`v-for`與`v-if`在同一個元素上時,`v-for`總是優先作用,而到了Vue3.x時,`v-if`總是優先於`v-for`,vue官方指出,比起在模板層建立邏輯,更應該善用`computed`篩選列表,並以此創建可見屬性
+
+使用`computed`篩選案例可看`prVue/v-for案例`
+
 
 

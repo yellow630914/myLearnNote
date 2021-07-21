@@ -935,7 +935,73 @@ vue中的createApp中有提供一個屬性計算的功能,能夠將屬性在view
 
 在使用`v-for`與`v-if`時需要特別注意,當在`Vue2.x`版本中`v-for`與`v-if`在同一個元素上時,`v-for`總是優先作用,而到了Vue3.x時,`v-if`總是優先於`v-for`,vue官方指出,比起在模板層建立邏輯,更應該善用`computed`篩選列表,並以此創建可見屬性
 
-使用`computed`篩選案例可看`prVue/v-for案例`
+使用`computed`篩選案例可看:
 
+- [v-for實例](https://github.com/yellow630914/prVue/blob/master/v-for%E6%A1%88%E4%BE%8B.html)
 
+---
+
+## Key屬性
+
+vue的DOM是先搭建一個虛擬DOM之後,再以diff算法去渲染實體DOM,這個算法在array中若要插入一個元素,將以以下方式插入:
+
+![img](https://i.imgur.com/r3fS9WR_d.webp?maxwidth=760&fidelity=grand)
+
+在虛擬DOM裡每個元素都指向各自的位置,當今天有一個E要插入時,E會取代他要插入位置的元素並將後面的元素後移一格,多出來的最後一個元素則會插入最後一個位置,當array中的元素很多時,這樣的操作將會耗費較多運算資源,此時我們可以在元素上使用key屬性
+
+![img](https://i.imgur.com/1ytUnlC_d.webp?maxwidth=760&fidelity=grand)
+
+Key屬性會固定每一個元素放的位置,當插入時可以直接放入,而不用移動其他元素
+
+需要注意的是key的值最好不要用array或物件之類非基本類型值,最好使用字串或數值
+
+---
+
+## v-model
+
+`v-model`可以雙向綁定`<input>`與`viewmodel`端中的值,`v-model`的實現是由`v-bind`與`v-on`相結合,表單中的值會實時更新到`viewmodel`中而`viewmodel`的值也會反應到`view`中
+
+```html
+<div id="app">
+  <!--v-model會使text與msg同步,當輸入時msg也會隨之改變-->
+  <input type="text" v-model="msg">
+  <h2>{{msg}}</h2>
+</div>
+```
+
+### v-model與radio
+
+以下展示v-model與radio雙向綁定的實例:
+
+```html
+<body>
+  <div id="app">
+    <!--以下是radio雙向綁定的實例-->
+    <label><input name="sex" type="radio" value="男" v-model="sex">男</label>
+    <label><input name="sex" type="radio" value="女" v-model="sex">女</label>
+    <p>=======================================</p>
+    <h2>{{sex}}</h2>
+  </div>
+<script src="js/vue.global.js"></script>
+<script>
+  const HelloVue = {
+    data() {
+      return {
+        //可以直接在這裡設定默認值,因為雙向綁定的關係會直接反映到radio
+        sex:'男'
+      }
+    }
+  }
+  const app = Vue.createApp(HelloVue).mount('#app');
+</script>
+</body>
+```
+
+ 其他的實例可參考:
+
+- [v-model與下拉選單](https://github.com/yellow630914/prVue/blob/master/v-model%E8%88%87%E4%B8%8B%E6%8B%89%E9%81%B8%E5%96%AE.html)
+- [v-model與checkbox](https://github.com/yellow630914/prVue/blob/master/v-model%E8%88%87checkbox.html)
+- [v-model的修飾符](https://github.com/yellow630914/prVue/blob/master/v-model%E7%9A%84%E4%BF%AE%E9%A3%BE%E7%AC%A6.html)
+
+---
 

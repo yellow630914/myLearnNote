@@ -1,6 +1,6 @@
 
 
-# vue學習
+# vue基礎
 
 ***
 
@@ -188,6 +188,10 @@ const app = Vue.createApp(listApp).mount('#app');
 Vue.js Devtools是在瀏覽器上的開發工具,能夠幫助開發者在瀏覽器上調整vue代碼,此工具可以直接在chrome與firefox插件商店找到
 
 - [google chrome](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd?hl=zh-TW)
+
+---
+
+# Vue的指令與語法
 
 ---
 
@@ -937,7 +941,7 @@ vue中的createApp中有提供一個屬性計算的功能,能夠將屬性在view
 
 使用`computed`篩選案例可看:
 
-- [v-for實例](https://github.com/yellow630914/prVue/blob/master/v-for%E6%A1%88%E4%BE%8B.html)
+- [v-for實例](https://github.com/yellow630914/prVue/blob/master/02-vue%E7%9A%84%E6%8C%87%E4%BB%A4%E5%92%8C%E8%AA%9E%E6%B3%95/v-for%E6%A1%88%E4%BE%8B.html)
 
 ---
 
@@ -999,9 +1003,103 @@ Key屬性會固定每一個元素放的位置,當插入時可以直接放入,而
 
  其他的實例可參考:
 
-- [v-model與下拉選單](https://github.com/yellow630914/prVue/blob/master/v-model%E8%88%87%E4%B8%8B%E6%8B%89%E9%81%B8%E5%96%AE.html)
-- [v-model與checkbox](https://github.com/yellow630914/prVue/blob/master/v-model%E8%88%87checkbox.html)
-- [v-model的修飾符](https://github.com/yellow630914/prVue/blob/master/v-model%E7%9A%84%E4%BF%AE%E9%A3%BE%E7%AC%A6.html)
+- [v-model與下拉選單](https://github.com/yellow630914/prVue/blob/master/02-vue%E7%9A%84%E6%8C%87%E4%BB%A4%E5%92%8C%E8%AA%9E%E6%B3%95/v-model%E8%88%87%E4%B8%8B%E6%8B%89%E9%81%B8%E5%96%AE.html)
+- [v-model與checkbox](https://github.com/yellow630914/prVue/blob/master/02-vue%E7%9A%84%E6%8C%87%E4%BB%A4%E5%92%8C%E8%AA%9E%E6%B3%95/v-model%E8%88%87checkbox.html)
+- [v-model的修飾符](https://github.com/yellow630914/prVue/blob/master/02-vue%E7%9A%84%E6%8C%87%E4%BB%A4%E5%92%8C%E8%AA%9E%E6%B3%95/v-model%E7%9A%84%E4%BF%AE%E9%A3%BE%E7%AC%A6.html)
+- [vue小案例](https://github.com/yellow630914/prVue/blob/master/02-vue%E7%9A%84%E6%8C%87%E4%BB%A4%E5%92%8C%E8%AA%9E%E6%B3%95/vue%E6%8C%87%E4%BB%A4%E5%B0%8F%E6%A1%88%E4%BE%8B.html)
 
 ---
 
+# Vue的組件化
+
+---
+
+## 組件化簡單介紹
+
+組件化的概念其實在現實中就有,若將地球視為一個組件,其下就是國家,各國家下有各地區等等...,一層層就是組件化。
+
+程式上,若是把一整個邏輯都放在一起將會難以開發與維護,在web開發中若是將網站分成一個個獨立頁面,各頁面又分成一個個獨立組件,每個組件獨力完成各功能,這樣更易於開發與維護
+
+### Vue中的組件化
+
+Vue在底層提供了一種抽象,讓開發者可以編寫出一個個獨立的可復用的小組件或應用,無論是組件或應用,最後都可以抽象成一個組件樹
+
+![img](https://i.imgur.com/tIghULt_d.webp?maxwidth=760&fidelity=grand)
+
+Vue中的組件大致可以分稱三大類的組件:
+
+1. 頁面級的組件,例如:一個網站中的home,about等等...
+2. 業務上可復用的基礎組件,例如:navbar,浮動導航側欄
+3. 其他的獨立組件,例如:彈出廣告
+
+### Vue的組件使用
+
+vue的組件可以說是一段處理好的html模板,他可以在`Vue`中的`component`函示來創建,其內的結構與`createApp`很同為組件,可以放入`data(),methods,computed`等...,來幫助處理資料,而template就是要放入html的模板,以下是`component`簡單範例:
+
+```html
+<body>
+  <div id="app">
+    <!--放入組件-->
+    <button-counter></button-counter>
+  </div>
+<script src="js/vue.global.js"></script>
+<script>
+  const app = Vue.createApp({
+    data() {
+      return {
+      }
+    }
+  });
+  //在createApp下創建一個全域組件,組件格式是component(組件名,{ 組件內容 })
+  app.component('button-counter',{
+    //component的內容跟creatApp非常相像
+    data(){
+      return {
+        count: 0
+      }
+    },
+    //這是組件的模板,可以放入html中
+    template:`
+      <button @click="count++">
+        你點擊了{{count}}次按鈕
+      </button>
+    `
+  })
+  app.mount('#app');
+</script>
+</body>
+```
+
+### component的命名規範
+
+- kebab-case: 像是My component name在此規則下會是my-component-name
+
+- PascalCase: 像是My component name在此規則下會是MyComponentName
+
+  !! 要注意的是,當在Vue當中,兩種命名方式都是有效的,但是在html使用組件時,PascalCase要在vue-cli中才是有效的,在DOM中只能使用kebab-case,例如今天你在vue中定義了一組用PascalCase命名的組件:
+
+  ```javascript
+  app.component('ButtonCounter',{
+      //組件內容
+      ...
+    })
+  ```
+
+  而你在html中要調用他時,可以使用kekab-case,不能使用PascalCase:
+
+  ```html
+  <div id="app">
+    <!--可以使用-->
+    <button-counter></button-counter>
+    <!--不能使用-->
+    <ButtonCounter></ButtonCounter>
+  </div>
+  ```
+
+### 全局組件與局部組件
+
+全局組件與局部組件的概念就如同前棉說的一樣,是一個樹的概念,通常都會以一個實例為全局,其下的組件分支出去成一棵樹,如:
+
+![img](https://i.imgur.com/mtg4uvU_d.webp?maxwidth=760&fidelity=grand)
+
+以此樹為例,在root下的組件就是全局組件,通常包含各大功能,而像logo與about就是footer下的組件,當在footer渲染目標外時就無法調用

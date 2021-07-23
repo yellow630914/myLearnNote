@@ -1171,7 +1171,15 @@ template:"#btnCounterTemplate"
 
 ### Vue的data()為甚麼是函式而不是物件?
 
+在vue中每個組件都是很有可能被多次復用到,此時如果data是一個物件而不是函式,這代表每一個在view中,每一個被復用的組件中的data都會指向同一個定義域的data,而不是多個獨立data,若是其中一個data改變了,就會造成其他被復用的data也跟著改變,從而破壞每一個組件的獨立性,我們以下圖為例:
 
+![img](https://i.imgur.com/sd49xbW_d.webp?maxwidth=760&fidelity=grand)
 
+當data是function時,他在每一個被實體化的組件中都會獨立return一個data值
 
+![img](https://i.imgur.com/bXUtzES_d.webp?maxwidth=760&fidelity=grand)
+
+而data是物體時,每一個被實體化的組件中的data都是原本模板中的data(都指向同一個定義域),造成牽一髮動全身的情況
+
+---
 

@@ -1102,4 +1102,76 @@ vue的組件可以說是一段處理好的html模板,他可以在`Vue`中的`com
 
 ![img](https://i.imgur.com/mtg4uvU_d.webp?maxwidth=760&fidelity=grand)
 
-以此樹為例,在root下的組件就是全局組件,通常包含各大功能,而像logo與about就是footer下的組件,當在footer渲染目標外時就無法調用
+以此樹為例,在root下的組件就是全局組件,通常包含各大頁面的功能,而像logo與about就是可復用的一些小組件,當一個地方要使用局部組件時需要用,組件內的`components`方法去呼叫他,然後再填入`template`是用,如下:
+
+```javascript
+//盒子局部組件
+  const localBox = {
+    //註冊其他局部組件,使其能在這裡使用
+    components:{
+      'btn-counter':btnCounter
+    },
+    //其他組件填入template使用
+    template:`
+    <div style="width: 200px; height: 200px; background-color: aqua;">
+      盒子組件
+      <btn-counter></btn-counter>
+    </div>
+    `
+  }
+```
+
+若是要使用全局組件則可直接填入`template`使用,不過通常全局組件會很少,一個網站通常由很多個局部組件交織而成
+
+詳細可參考:[全局組件與局部組件](https://github.com/yellow630914/prVue/blob/master/03-vue%E7%9A%84%E7%B5%84%E4%BB%B6%E5%8C%96/%E5%85%A8%E5%B1%80%E7%B5%84%E4%BB%B6%E8%88%87%E5%B1%80%E9%83%A8%E7%B5%84%E4%BB%B6.html)
+
+---
+
+### 父子組件
+
+在開發過程中,一層層的組件會形成一棵樹,其中父子關係是很重要的一種,例如我們今天在app下添加了一個`box`組件,而box裡又有一個`box-counter`,此時`box`就是`app`的子組件,而`box-counter`則是`box`的子組件,結構如下圖:
+
+![img](https://i.imgur.com/rl7kEMd_d.webp?maxwidth=760&fidelity=grand)
+
+需要特別注意的是,在這個結構下`box`是可以調用`box-counter`的,但是`APP`無法直接調用,若想調用就必須用`components`把`box-counter`加入子組件才行
+
+詳細可參考: [父子組件](https://github.com/yellow630914/prVue/blob/master/03-vue%E7%9A%84%E7%B5%84%E4%BB%B6%E5%8C%96/%E7%88%B6%E5%AD%90%E7%B5%84%E4%BB%B6.html)
+
+---
+
+### 組件標籤化
+
+前面曾經提到MVVM的概念,View跟Viewmodel是分開獨立的,但是直接在`components`中填入`template`會讓維護變得不易,所以我們可以將組件的`template`部分在view端標籤化,如:
+
+```html
+<template id="btnCounterTemplate">
+  <button @click="count++">你點擊了{{count}}次</button>
+</template>
+```
+
+而在Viewmodel中的組件就可以在`template`中用selector去找模板,如:
+
+```javascript
+template:"#btnCounterTemplate"
+```
+
+這樣一來就可以把view跟viewmodel清楚分開,讓組件更易於維護
+
+詳細可參考:[組件標籤化](https://github.com/yellow630914/prVue/blob/master/03-vue%E7%9A%84%E7%B5%84%E4%BB%B6%E5%8C%96/%E7%B5%84%E4%BB%B6%E6%A8%99%E7%B1%A4%E5%8C%96.html)
+
+---
+
+### 組件間的data()是否能共享?
+
+答案是不行,若是在`app`中的`data()`定義了一個`msg:"Hello Vue!"`,而在另一個組件中想要直接調用`msg`是不行的,同時瀏覽器也會回報沒有定義`msg`
+
+之所以這樣設計是為了保持各阻件的封閉性,降低耦合度
+
+詳細可參考:[組件間的data()是否能共享?](https://github.com/yellow630914/prVue/blob/master/03-vue%E7%9A%84%E7%B5%84%E4%BB%B6%E5%8C%96/%E7%B5%84%E4%BB%B6%E9%96%93%E7%9A%84data()%E6%98%AF%E5%90%A6%E8%83%BD%E5%85%B1%E4%BA%AB.html)
+
+### Vue的data()為甚麼是函式而不是物件?
+
+
+
+
+

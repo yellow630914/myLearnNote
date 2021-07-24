@@ -1183,3 +1183,111 @@ template:"#btnCounterTemplate"
 
 ---
 
+## 組件通信-props
+
+vue保證了組件之間的獨立性,但是我們依然有組件間通信的需求,vue也提供了組件之間通信的方法,首先我們要先了解組件通信的原則
+
+1. 不要在子組件中修改父子件的資料
+2. 資料與資料處理函式應該在同一個模塊內
+
+在vue裡面大部分的數據傳遞都是在父子之間,只有少部分的是其他組件之間的傳遞,而props就是常用來父傳子的方式,props又有三種方式可以傳遞,首先先介紹第一種,不限定資料型別,也沒有確認必要性與默認值的
+
+### 簡單的props使用
+
+props可以被宣告在組件中,他可以去接收父子件的資料,可以把它想像成宣告一個裝資料的容器:
+
+```javascript
+const Box = {
+  //可以在實體化時去接收父子件的資料
+  props:["brand","livers"],
+  template:'#box'
+};
+```
+
+然後在實體化時用動態綁定的方式去接取來自父子件的資料:
+
+```html
+<!--用brand與livers接收了app中的msg1與msg2-->
+<box :brand="msg1" :livers="msg2"></box>
+```
+
+這時就可以在模板中使用他們了,使用的時候是用props的命名:
+
+```html
+<template id="box">
+  <div class="temp">
+    <p>-----------------</p>
+    <!--在模板中使用props-->
+    <h2>{{brand}}</h2>
+    <ul>
+      <li v-for="item in livers">
+        {{item}}
+      </li>
+    </ul>
+    <p>-----------------</p>
+  </div>
+</template>
+```
+
+詳細可參考:[簡單的props使用](https://github.com/yellow630914/prVue/blob/master/03-vue%E7%9A%84%E7%B5%84%E4%BB%B6%E5%8C%96/%E7%B5%84%E4%BB%B6%E9%80%9A%E4%BF%A1-%E7%B0%A1%E5%96%AE%E7%9A%84props%E4%BD%BF%E7%94%A8.html)
+
+### 限定型別的props使用
+
+props在接收資料時可以限定型別,當型別錯誤傳入時他會發出警告,宣告一個限定型別的propos語法如下:
+
+```javascript
+const Box = {
+  //限定brand跟livers傳入時的型別
+  props:{
+    brand:String, //限定為String
+    livers:Array  //限定為Array
+  },
+  template:'#box'
+};
+```
+
+當在傳入錯誤型別的資料時,雖然能夠顯示,但是很有可能顯示錯誤,且會回報警告
+
+```html
+<!--正確的依型別傳入-->
+<box :brand="msg1" :livers="msg2"></box>
+<!--傳入object和數字-->
+<box :brand="obj" :livers="number"></box>
+```
+
+### 必需傳入的props與默認值
+
+props除了設定型別,也可以限定props的必要性與設定默認值,當應該傳入的資料未傳入時,會警告或顯示默認值
+
+```javascript
+const Box = {
+  //限定brand跟livers傳入時的必要性與默認值
+  props:{
+    //type可以設定型別,required可以設定是否必要,default設定默認值
+    brand:{type:String, required:true ,default:"This is default"},
+    livers:{type:Array, required:true},
+  },
+  template:'#box'
+};
+```
+
+當傳入錯誤時,雖然也會顯示,但會警告或顯示默認值
+
+```html
+<!--正確的依規則傳入-->
+<box :brand="msg1" :livers="msg2"></box>
+<!--未依規則傳入livers,會警告-->
+<box :brand="msg1"></box>
+<!--未依規則傳入brand,會呼叫defaut值-->
+<box :livers="msg2"></box>
+```
+
+詳細可參考:[必需傳入的props與默認值](https://github.com/yellow630914/prVue/blob/master/03-vue%E7%9A%84%E7%B5%84%E4%BB%B6%E5%8C%96/%E9%99%90%E5%AE%9A%E5%9E%8B%E5%88%A5%E7%9A%84props%E4%BD%BF%E7%94%A8.html)
+
+### props的其他事項
+
+1. props支援驗證的型別有：`String ,Number ,Boolean ,Array ,Object ,Data ,Function ,Symbol`
+2. props通常適用於父傳子的情況
+3. 定義的props可以被template引用
+4. 如果要向其他組件傳遞props需要經過多層傳遞,無法直接傳遞
+5. 在DOM中無法識別大小寫,所以在非CLI的情況下,prop的命名最好使用kebab-case

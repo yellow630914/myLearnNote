@@ -1291,3 +1291,75 @@ const Box = {
 3. 定義的props可以被template引用
 4. 如果要向其他組件傳遞props需要經過多層傳遞,無法直接傳遞
 5. 在DOM中無法識別大小寫,所以在非CLI的情況下,prop的命名最好使用kebab-case
+
+---
+
+## 組件通信-自訂義事件
+
+當需要由子組件去更動父祖件的資料或其他地方時,就不建議使用props了,這時通常會使用自訂義事件,而通常這個事件被分為兩個階段
+
+1. 綁定事件監聽：首先要在子組件中的methods中埋下一個發射器
+
+   ```javascript
+   const Box = {
+     template:"#box",
+     methods:{
+       btnClick(){
+         console.log("click")
+         //這是box-click發射器
+         this.$emit('box-click')
+       }
+     }    
+   };
+   ```
+
+   這個發射器發射出box-click這個訊號,此時父祖件中的這一個子組件標籤就會接收到這個訊號,所以咬在這個標籤上設定一個監聽器
+
+   ```html
+   <!--父組件-->
+   <div id="app" class="main">
+     <!--@box-click就是一個監聽"box-click發射器"的監聽器,當監聽到事件發生時觸發boxFunc-->
+     <box @box-click="boxFunc"></box>
+   </div>
+   ```
+   
+2. 觸發事件：而這個觸發事件就是放在父子件中的method
+
+   ```javascript
+   //這是父祖件中的methods
+   methods: {
+     boxFunc(){
+     	//子組件的按鈕時觸發
+     	console.log("子組件的按鈕發生了點擊")
+     } 
+   }
+   ```
+
+藉由這樣的方式就可以從子組件去更改父子件中的資料了
+
+詳細可參考:[組件通信-自訂義事件1](https://github.com/yellow630914/prVue/blob/master/03-vue%E7%9A%84%E7%B5%84%E4%BB%B6%E5%8C%96/%E7%B5%84%E4%BB%B6%E9%80%9A%E4%BF%A1-%E8%87%AA%E8%A8%82%E7%BE%A9%E4%BA%8B%E4%BB%B61.html)
+
+### 使用$emit()順便傳遞參數
+
+在使用$emit()發射器時也可以傳遞參數
+
+```javascript
+//$emit第2個欄位以後都是參數的欄位,這裡傳遞一個物件
+this.$emit('box-click', dataObj)
+```
+
+然後可以直接在父祖件中的methods接收
+
+```javascript
+methods: {
+  //item就是從$emit發射過來的dataObj
+  boxFunc(item){
+    //取得子組件給的參數後log出來
+    console.log("子組件的按鈕發生了點擊")
+    console.log(item)
+  } 
+}
+```
+
+詳細可參考:[組件通信-自訂義事件2](https://github.com/yellow630914/prVue/blob/master/03-vue%E7%9A%84%E7%B5%84%E4%BB%B6%E5%8C%96/%E7%B5%84%E4%BB%B6%E9%80%9A%E4%BF%A1-%E8%87%AA%E8%A8%82%E7%BE%A9%E4%BA%8B%E4%BB%B62.html)
+

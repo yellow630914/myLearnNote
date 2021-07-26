@@ -1363,3 +1363,223 @@ methods: {
 
 詳細可參考:[組件通信-自訂義事件2](https://github.com/yellow630914/prVue/blob/master/03-vue%E7%9A%84%E7%B5%84%E4%BB%B6%E5%8C%96/%E7%B5%84%E4%BB%B6%E9%80%9A%E4%BF%A1-%E8%87%AA%E8%A8%82%E7%BE%A9%E4%BA%8B%E4%BB%B62.html)
 
+---
+
+## 父子組件的互相訪問
+
+父子組件之間是有一個方法可以互相調用涵式或計算屬性等等組件內部的選項,例如今天你父組件想使用子組件的函式可以使用$refs
+
+### 父組件訪問子組件-$refs
+
+使用$refs是可以取得直接取得整個子組件的,若要取得需要先綁定你要取得哪一個子組件
+
+```html
+<!--父組件-->
+<div id="app">
+  <!--父組件中的子組件,用ref綁定取得-->
+  <box ref="box1"></box>
+  <!--按下時觸發有取得子組件的函式-->
+  <button @click="getChildComponent">Pray the Sun!</button>
+</div>
+```
+
+在父組件模板中的子組件上加上一個ref屬性,並為他命名後,父子件就可以依照這個名字用$refs去找到這個組件,我們再來看看getChildComponent取得了子組件後,做了甚麼操作
+
+```javascript
+getChildComponent(){
+  //使用$refs去呼叫所有在父組件中被ref命名過的子組件
+  console.log(this.$refs)
+  //使用$refs.box1去呼叫名字叫"box1"的子組件(ref過)
+  console.log(this.$refs.box1)
+  //去找到子組件中data()的資料
+  console.log(this.$refs.box1.msg)
+  //使用子組件中的函式
+  this.$refs.box1.btnClick()
+}
+```
+
+詳細可參考:[父組件訪問子組件-$refs](https://github.com/yellow630914/prVue/blob/master/03-vue%E7%9A%84%E7%B5%84%E4%BB%B6%E5%8C%96/%E7%88%B6%E7%B5%84%E4%BB%B6%E8%A8%AA%E5%95%8F%E5%AD%90%E7%B5%84%E4%BB%B6-%24ref.html)
+
+### 子組件訪問父組件$parent與$root
+
+一般來說我們並不鼓勵子組件去訪問父組件,這會導致封閉性降低,組件的復用性變差,但若是有特殊情況可以使用$parent或$root向上訪問
+
+```javascript
+btnClick(){
+  this.count++
+  //取得父組件中的msg
+  console.log(this.$parent.msg)
+  //取得爺組件中的msg
+  console.log(this.$parent.$parent.msg)
+  //取得根組件的msg
+  console.log(this.$root.msg)
+}
+```
+
+詳細可參考:[子組件訪問父組件$parent與$root](https://github.com/yellow630914/prVue/blob/master/03-vue%E7%9A%84%E7%B5%84%E4%BB%B6%E5%8C%96/%E5%AD%90%E7%B5%84%E4%BB%B6%E8%A8%AA%E5%95%8F%E7%88%B6%E7%B5%84%E4%BB%B6%24parent%E8%88%87%24root.html)
+
+---
+
+## 插槽
+
+插槽的靈感來源於生活中的各種3C設備的插槽,像是USB,其目的在於讓設備更有拓展性
+
+在vue中的插槽定義為,在子組件中留有一個佔位標籤`<slot></slot>`,而父組件可以在`<slot>`中填入模板代碼,如html或組件等等,添入的代碼會取代`<slot>`
+
+### 插槽的基本使用
+
+首先先來看看插槽最基本的使用,我們在子組件box中的template先預留下`<slot>`,`<slot>`可以事先填入默認內容,在沒有填入的情況顯示默認內容
+
+```html
+<template id="box">
+  <div class="box">
+  	<h2>Hoyolive</h2>
+    <!--這是插槽-->
+    <slot>默認內容</slot>
+  </div>
+</template>
+```
+
+然後在父組件的模板中填入`<slot>`中要填入的內容
+
+```html
+<div id="app">
+  <box>
+    <!--填入插槽的內容-->
+    <p>我是大便</p>
+  </box>
+  <box>
+    <!--填入插槽的內容-->
+    <p>我是好白癡</p>
+  </box>
+  <!--沒有填入,顯示默認內容-->
+  <box></box>
+</div>
+```
+
+詳細可參考:[插槽的基本使用](https://github.com/yellow630914/prVue/blob/master/03-vue%E7%9A%84%E7%B5%84%E4%BB%B6%E5%8C%96/%E6%8F%92%E6%A7%BD%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8.html)
+
+### 具名插槽
+
+當有多個插槽在組件內時,需要依照命名去讓父組件知道什麼東西要放到哪個插槽,使用的方法是要先為`<slot>`命名:
+
+```html
+<template id="box">
+  <div class="box">
+    <h2>Miyazaki Hidetaka</h2>
+    <!--這是插槽1-->
+    <slot name="slot1">默認內容1</slot>
+    <!--這是插槽2-->
+    <slot name="slot2">默認內容2</slot>
+    <!--這是插槽3-->
+    <slot name="slot3">默認內容3</slot>
+  </div>
+</template>
+```
+
+然後在填入內容時用`v-solt`去綁定要填入的`<slot>`
+
+```html
+<box>
+  <!--用v-slot填入slot1-->
+  <template v-slot:slot1>
+    <p>Dark Soul</p>
+  </template>
+  <!--用v-slot填入slot2-->
+  <template v-slot:slot2>
+    <p>BloodBorne</p>
+  </template>
+  <!--用v-slot填入slot3-->
+  <template v-slot:slot3>
+    <p>Sekiro:Shadow Die Twice</p>
+  </template>
+</box>
+```
+
+詳細可參考:[具名插槽](https://github.com/yellow630914/prVue/blob/master/03-vue%E7%9A%84%E7%B5%84%E4%BB%B6%E5%8C%96/%E5%85%B7%E5%90%8D%E6%8F%92%E6%A7%BD.html)
+
+### 渲染作用域
+
+當在父組件模板中的內容都是依父模板中的資料去編譯,子組件模板中的內容都是由子模板的內容去編譯,我們看範例中父組件與子組件中都有一個叫isShow的boolean值
+
+```javascript
+//子組件
+const Box = {
+  data(){
+    return {
+      //子組件的布林值,為false值
+      isShow:false
+    }
+  },
+  template:"#box"
+}
+//父組件
+const app = Vue.createApp({
+  data() {
+    return {
+      //父組件的布林值,為true值
+      isShow:true
+    }
+  },
+  components:{
+    "box":Box
+  }
+});
+```
+
+此時父子組件中若是各自都要取得isShow他們會得到哪一個呢?我們直接看結果
+
+```html
+<!--父組件的模板-->
+<div id="app">
+  <!--取得的isShow是父組件的,是true-->
+  <box v-show="isShow"></box>
+</div>
+<!--子組件的模板-->
+<template id="box">
+  <div class="box">
+    <!--取得的isShow是子組件的,是false-->
+    <button v-show="isShow">Vue!</button>
+  </div>
+</template>
+```
+
+所以渲染的結果是box會被顯示,但是box裡的button會消失(css)
+
+詳細可參考:[渲染作用域](https://github.com/yellow630914/prVue/blob/master/03-vue%E7%9A%84%E7%B5%84%E4%BB%B6%E5%8C%96/%E6%B8%B2%E6%9F%93%E4%BD%9C%E7%94%A8%E5%9F%9F.html)
+
+### 作用域插槽
+
+如果要從子組件中抽出資料用在父組件的模板插槽中的話,可以使用綁定的方式,首先需要從插槽先綁定子組件的資料
+
+```html
+<template id="box">
+  <div class="box">
+    <!--綁定到子組件的data中-->
+    <slot :data="nameArr" :msg="msg">
+      <!--默認的-->
+      <ul style="margin: auto;">
+        <li v-for="name in nameArr">{{name}}</li>
+      </ul>
+    </slot>
+  </div>
+</template>
+```
+
+然後父組件模板的接收方可以用v-slot去命名取得的子組件資料
+
+```html
+<box>
+  <!--v-slot:default="此處為取得的資料命名"-->
+  <template v-slot:default="slotProps">
+    <!--以命名為slotProps為例,在後面加上之前綁定的屬性即可取得對應資料-->
+    <span>{{slotProps.msg}}</span>
+    <ul>
+      <!--也可用在v-for之類的指令內-->
+      <li v-for="name in slotProps.data">{{name}}</li>
+    </ul>
+  </template>
+</box>
+```
+
+詳細可參考:[作用域插槽](https://github.com/yellow630914/prVue/blob/master/03-vue%E7%9A%84%E7%B5%84%E4%BB%B6%E5%8C%96/%E4%BD%9C%E7%94%A8%E5%9F%9F%E6%8F%92%E6%A7%BD.html)

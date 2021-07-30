@@ -119,9 +119,72 @@ console.log(mo)
 | lastIndexOf() | 回傳目標出現的最後一個字符索引值[註3] [註4] | string.lastIndexOf("target") |
 | search()      | 回傳目標出現的第一個字符索引值[註5]         | string.seach("target")       |
 | match()       | 回傳與參數相同的字串,若為多個,形成array     | string.match(/target/g)      |
-|               |                                             |                              |
+| includes()    | 當字串包含參數,回傳true                     | string.includes("target")    |
+| startsWith()  | 當字串的開頭與參數相同,回傳true             | string.startsWith("target")  |
+| endsWith()    | 當字串以參數結尾,回傳true                   | string.endsWith("target")    |
 
 [^註3]: 若沒找到,回傳-1
 [^註4]: 都能接受從哪裡開始搜索,由第二個參數填入
 [^註5]: search()無法選擇從哪裡搜索,indexOf()不能用正則表達式
+
+---
+
+## String Templates
+
+### Back-Tics語法
+
+Back-Tics是指用\`把內容包起來的語法,例如:
+
+```javascript
+`this is Back-Tics`
+```
+
+在Back-Tics內可以放入多行內容,插值,和簡單的表達式,例如:
+
+```javascript
+//多行內容
+let text = 
+`this
+is
+Back-Tics
+`;
+//插值
+let x = "xxx";
+let y = "yyy";
+let text = `import ${x}, ${y}`;
+//表達式
+let price = 5;
+let VAT = 3;
+let total = `Total: ${price*VAT}`
+```
+
+---
+
+## Number Methods
+
+| Methods         | 說明                                              | 例子                  |
+| --------------- | ------------------------------------------------- | --------------------- |
+| toString()      | 轉成字串                                          | Nums.toString()       |
+| toExponential() | 四捨五入並以指數表示法書寫,參數指定到小數點第幾位 | Nums.toExponential(3) |
+| toFixed()       | 顯示到小數點第幾位                                | Nums.toFixed(3)       |
+| toPrecision()   | 指定顯示的數字長度(自動四捨五入)                  | Nums.toPrecision(3)   |
+| valueOf()       | 轉成數字(對Nums來說沒用)                          | Nums.valueOf()        |
+| Number()        | 轉成數字,這是一個全局methods[註6]                 | String.Number()       |
+| parseInt()      | 轉成整數,這是一個全局methods                      | String.parseInt()     |
+| parseFloat()    | 轉成浮點數,這是一個全局methods                    | String.parseFloat()   |
+
+[^註6]: 若是輸入Date,回傳值是1970年1月1日往後算的毫秒數
+
+---
+
+## Array Methods
+
+| Methods    | 說明                                  | 例子           |
+| ---------- | ------------------------------------- | -------------- |
+| toString() | 將array合為String,元素間自動以","隔開 | Ary.toString() |
+| join()     | 將array合為String,元素間以參數隔開    | Ary.join("x")  |
+| pop()      | 刪除最後一個元素                      | Ary.pop()      |
+| push()     | 在最後增加一個元素                    | Ary.push()     |
+| shift()    | 將array的第一個移出,可以指定移出地點  | Ary.shift()    |
+|            |                                       |                |
 

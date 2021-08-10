@@ -179,12 +179,27 @@ let total = `Total: ${price*VAT}`
 
 ## Array Methods
 
-| Methods    | 說明                                  | 例子           |
-| ---------- | ------------------------------------- | -------------- |
-| toString() | 將array合為String,元素間自動以","隔開 | Ary.toString() |
-| join()     | 將array合為String,元素間以參數隔開    | Ary.join("x")  |
-| pop()      | 刪除最後一個元素                      | Ary.pop()      |
-| push()     | 在最後增加一個元素                    | Ary.push()     |
-| shift()    | 將array的第一個移出,可以指定移出地點  | Ary.shift()    |
-|            |                                       |                |
+| Methods    | 說明                                                         | 例子                |
+| ---------- | ------------------------------------------------------------ | ------------------- |
+| toString() | 將array合為String,元素間自動以","隔開                        | Ary.toString()      |
+| join()     | 將array合為String,元素間以參數隔開                           | Ary.join("x")       |
+| pop()      | 刪除最後一個元素                                             | Ary.pop()           |
+| push()     | 在最後增加一個元素                                           | Ary.push("x")       |
+| shift()    | 將array的第一個移出,可以指定移出地點                         | Ary.shift()         |
+| unshift()  | 在第一個加入元素                                             | Ary.unshift("x")    |
+| splice()   | 插入或刪除元素,第一個參數是元素位置,第二個參數是要刪除的元素數,其餘是要插入的元素值 | Ary.splice(2,0,"x") |
+| concat()   | 合併兩個Array                                                | Ary1.concat(Ary2)   |
+| slice()    | 切片Array,第一個參數是起始位置,第二個是結束位置,如果沒有結束位置則會切到底 | Ary.slice(1,5)      |
+
+---
+
+## Array Sort
+
+| Sort      | 說明            | 例子          |
+| --------- | --------------- | ------------- |
+| sort()    | 依字母排列[註7] | Ary.sort()    |
+| reverse() | 反轉Array順序   | Ary.reverse() |
+|           |                 |               |
+
+[^註7]: sort會把元素全部轉成string處理,導致在處理數字時會有誤差,所以我們必須用一個function去制定他的排序規則,例如:`Ary.sort( function(a,b){return a - b} )`當sort在比較前後值時傳回`a - b`如果傳回正值則是`true`,不會交換兩者位置,反之則是`false`,會交換兩者位置
 

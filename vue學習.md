@@ -1583,3 +1583,36 @@ const app = Vue.createApp({
 ```
 
 詳細可參考:[作用域插槽](https://github.com/yellow630914/prVue/blob/master/03-vue%E7%9A%84%E7%B5%84%E4%BB%B6%E5%8C%96/%E4%BD%9C%E7%94%A8%E5%9F%9F%E6%8F%92%E6%A7%BD.html)
+
+---
+
+### 動態組件
+
+當一個區塊要選擇放入組件時,一般可以用v-show實現,但是當這個區塊要放入的組件區塊過多時,可以使用動態組件,動態組件用`<component>`標籤去包裹,並用`is`去選擇要使用的標籤
+
+```html
+<div id="app">
+  <!--根據綁定cItem去改變這個地方是哪個組件-->
+  <component :is="cItem"></component>
+  <p>----------------------------------</p>
+  <button @click="change">switch</button> 
+</div>
+```
+
+但是這樣會有一個問題,那就是當沒有用到的標籤被隱藏時,上面的值都會初始化,若是想保留值需要使用`<keep-alive>`包裹起來
+
+```html
+<keep-alive>
+  <component :is="cItem"></component>
+</keep-alive>
+```
+
+詳細可參考:動態組件
+
+---
+
+### 異步組件
+
+大部分情況下javascrpit的執行順序都是一行行執行,當在一些大型項目中可能會導致加載過慢,所以我們可以使用異步組件讓需要時再加載這些組件,已讓用戶體驗更好
+
+vue中使用
